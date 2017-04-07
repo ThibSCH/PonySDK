@@ -2,6 +2,8 @@
 package com.ponysdk.core.ui.datagrid.test;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -64,6 +66,19 @@ public class MapAndList<DataType> implements Iterable<DataType> {
     @Override
     public Iterator<DataType> iterator() {
         return list.iterator();
+    }
+
+    public void sort(final Comparator<DataType> comparator) {
+        Collections.sort(list, comparator);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append(list.toString());
+        sb.append(" // ");
+        sb.append(map.toString());
+        return sb.toString();
     }
 
 }

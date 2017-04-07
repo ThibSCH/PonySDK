@@ -1,8 +1,8 @@
 
 package com.ponysdk.core.ui.datagrid.test;
 
-public interface ColumnSortListener {
+public interface ColumnSortListener<DataType> {
 
-    void onColumnSorted(ColumnDescriptor<?, ?> column);
+    void onColumnSorted(ColumnDescriptor<DataType, ?> column);
 
 }

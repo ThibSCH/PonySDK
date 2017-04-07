@@ -7,20 +7,27 @@ import com.ponysdk.core.ui.basic.Element;
 import com.ponysdk.core.ui.basic.PLabel;
 import com.ponysdk.core.ui.basic.PWidget;
 
-public class DefaultCellRenderer<DataType> implements CellRenderer<DataType, String> {
+public class DefaultCellRenderer<DataType, RenderedType> implements CellRenderer<DataType, RenderedType> {
 
-    private final Function<DataType, String> transform = String::valueOf;
-    private String rendered;
+    /** The function used to extract the rendered value from the original data **/
+    private final Function<DataType, RenderedType> transform;
+    /** The function used to render graphically the extracted data **/
+    private final Function<RenderedType, String> toTextTrasnform;
+
+    public DefaultCellRenderer(final Function<DataType, RenderedType> extract, final Function<RenderedType, String> toText) {
+        this.transform = extract;
+        this.toTextTrasnform = toText;
+    }
 
     @Override
     public PWidget render(final DataType data) {
-        rendered = transform.apply(data);
+        final String rendered = toTextTrasnform.apply(getRenderedValue(data));
         return Element.newPLabel(rendered);
     }
 
     @Override
     public PWidget update(final DataType data, final PWidget widget) {
-        rendered = transform.apply(data);
+        final String rendered = toTextTrasnform.apply(getRenderedValue(data));
         ((PLabel) widget).setText(rendered);
         return widget;
     }
@@ -31,8 +38,8 @@ public class DefaultCellRenderer<DataType> implements CellRenderer<DataType, Str
     }
 
     @Override
-    public String getRenderedValue() {
-        return rendered;
+    public RenderedType getRenderedValue(final DataType data) {
+        return transform.apply(data);
     }
 
     @Override

@@ -19,7 +19,7 @@ public interface CellRenderer<DataType, RenderedType> {
      * Ex : if this renderer is used to display a quantity extracted from an instance of DataType it
      * should return this quantity
      */
-    RenderedType getRenderedValue();
+    RenderedType getRenderedValue(final DataType data);
 
     String getDescription();
 }

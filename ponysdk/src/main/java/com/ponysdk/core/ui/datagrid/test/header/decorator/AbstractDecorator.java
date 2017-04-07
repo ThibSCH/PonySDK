@@ -5,12 +5,12 @@ import com.ponysdk.core.ui.basic.PPanel;
 import com.ponysdk.core.ui.datagrid.test.ColumnDescriptor;
 import com.ponysdk.core.ui.datagrid.test.HeaderRenderer;
 
-public abstract class AbstractDecorator implements HeaderRendererDecorator {
+public abstract class AbstractDecorator<DataType> implements HeaderRendererDecorator {
 
     private final HeaderRenderer decoratedRenderer;
-    protected final ColumnDescriptor<?, ?> column;
+    protected final ColumnDescriptor<DataType, ?> column;
 
-    public AbstractDecorator(final HeaderRenderer decoratedRenderer, final ColumnDescriptor<?, ?> column) {
+    public AbstractDecorator(final HeaderRenderer decoratedRenderer, final ColumnDescriptor<DataType, ?> column) {
         this.decoratedRenderer = decoratedRenderer;
         this.column = column;
     }

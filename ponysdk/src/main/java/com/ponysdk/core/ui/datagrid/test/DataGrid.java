@@ -1,6 +1,9 @@
 
 package com.ponysdk.core.ui.datagrid.test;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.function.Function;
 
 import com.ponysdk.core.ui.basic.IsPWidget;
@@ -8,12 +11,14 @@ import com.ponysdk.core.ui.basic.PWidget;
 import com.ponysdk.core.ui.datagrid.View;
 import com.ponysdk.core.ui.datagrid.impl.DefaultView;
 
-public class DataGrid<DataType> implements IsPWidget {
+public class DataGrid<DataType> implements IsPWidget, ColumnSortListener<DataType> {
 
     private final Function<DataType, ?> keyProvider = Function.identity();
 
     private final MapAndList<DataType> rows = new MapAndList<>(keyProvider);
     private final MapAndList<ColumnDescriptor<DataType, ?>> columns = new MapAndList<>(col -> col.getIdentifier());
+
+    private final List<ColumnDescriptor<DataType, ?>> sortedColumns = new ArrayList<>();
 
     private final View view = new DefaultView();
 
@@ -116,6 +121,27 @@ public class DataGrid<DataType> implements IsPWidget {
     @Override
     public PWidget asWidget() {
         return view.asWidget();
+    }
+
+    @Override
+    public void onColumnSorted(final ColumnDescriptor<DataType, ?> column) {
+        sortedColumns.remove(column);
+        if (column.isSorted()) {
+            sortedColumns.add(column);
+        }
+        sortByColumns();
+    }
+
+    private void sortByColumns() {
+        if (sortedColumns.isEmpty()) return;
+
+        Comparator<DataType> combinedComparator = sortedColumns.get(0).getComparator();
+        for (int i = 1; i < sortedColumns.size(); i++) {
+            final Comparator<DataType> additionalComparator = sortedColumns.get(i).getComparator();
+            combinedComparator = combinedComparator.thenComparing(additionalComparator);
+        }
+        rows.sort(combinedComparator);
+        drawRowFrom(0);
     }
 
 }
