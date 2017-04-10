@@ -144,4 +144,8 @@ public class DataGrid<DataType> implements IsPWidget, ColumnSortListener<DataTyp
         drawRowFrom(0);
     }
 
+    public void clearColumnsUsedToSort() {
+        sortedColumns.clear();
+    }
+
 }

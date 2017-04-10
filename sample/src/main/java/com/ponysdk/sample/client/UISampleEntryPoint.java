@@ -85,7 +85,7 @@ public class UISampleEntryPoint implements EntryPoint, UserLoggedOutHandler {
             return data % i;
         }, String::valueOf);
 
-        final HeaderRenderer headerRenderer = newHeaderRenderer(column, i % 2 == 0, grid);
+        final HeaderRenderer headerRenderer = newHeaderRenderer(column, true /* i % 2 == 0 */, grid);
 
         column.setHeaderRenderer(headerRenderer);
         column.setCellRenderer(cellRenderer);
@@ -146,9 +146,15 @@ public class UISampleEntryPoint implements EntryPoint, UserLoggedOutHandler {
             rowToRemove++;
         });
 
+        final PButton clearSort = Element.newPButton("clear sort");
+        clearSort.addClickHandler(e -> {
+            grid.clearColumnsUsedToSort();
+        });
+
         PWindow.getMain().add(addColBtn);
         PWindow.getMain().add(addRowBtn);
         PWindow.getMain().add(deleteRow);
+        PWindow.getMain().add(clearSort);
         PWindow.getMain().add(grid);
     }
 
