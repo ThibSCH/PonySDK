@@ -99,7 +99,7 @@ public class UISampleEntryPoint implements EntryPoint, UserLoggedOutHandler {
         final ColumnDescriptor<Integer, Integer> col = new ColumnDescriptor<>();
         final String colName = "Row initial number ";
 
-        final HeaderRenderer headerRenderer = newHeaderRenderer(col, false, grid);
+        final HeaderRenderer headerRenderer = newHeaderRenderer(col, true, grid);
         final CellRenderer<Integer, Integer> cellRenderer = new DefaultCellRenderer<>(Function.identity(), String::valueOf);
 
         col.setHeaderRenderer(headerRenderer);
@@ -111,7 +111,8 @@ public class UISampleEntryPoint implements EntryPoint, UserLoggedOutHandler {
     }
 
     private void testGrid(final boolean active) {
-        final DataGrid<Integer> grid = new DataGrid<>();
+        final Function<Integer, Integer> provider = in -> in / 2;
+        final DataGrid<Integer> grid = new DataGrid<>(provider);
         final AtomicInteger i = new AtomicInteger();
 
         addCounterColumn(grid);
@@ -151,6 +152,17 @@ public class UISampleEntryPoint implements EntryPoint, UserLoggedOutHandler {
             grid.clearColumnsUsedToSort();
         });
 
+        final PButton filter = Element.newPButton("filter");
+        filter.addClickHandler(e -> {
+            grid.onFilter(in -> in % 2 == 0);
+        });
+        final PButton clearFilter = Element.newPButton("clear filter");
+        clearFilter.addClickHandler(e -> {
+            grid.onFilter(in -> true);
+        });
+
+        PWindow.getMain().add(filter);
+        PWindow.getMain().add(clearFilter);
         PWindow.getMain().add(addColBtn);
         PWindow.getMain().add(addRowBtn);
         PWindow.getMain().add(deleteRow);

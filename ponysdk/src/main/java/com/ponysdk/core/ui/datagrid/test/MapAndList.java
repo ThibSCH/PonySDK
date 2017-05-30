@@ -36,7 +36,9 @@ public class MapAndList<DataType> implements Iterable<DataType> {
         final Object key = keyProvider.apply(data);
 
         if (map.containsKey(key)) {
-            map.put(key, data);
+            //Update the previous value
+            final DataType oldData = map.put(key, data);
+            list.set(indexOf(oldData), data);
         } else {
             map.put(key, data);
             list.add(data);
@@ -47,7 +49,7 @@ public class MapAndList<DataType> implements Iterable<DataType> {
         final Object key = keyProvider.apply(data);
 
         if (map.containsKey(key)) {
-            final int index = list.indexOf(data);
+            final int index = list.indexOf(map.get(key));
             list.remove(index);
             map.remove(key);
             return index;

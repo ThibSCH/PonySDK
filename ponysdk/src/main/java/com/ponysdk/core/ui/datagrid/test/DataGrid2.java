@@ -11,25 +11,20 @@ import com.ponysdk.core.ui.basic.PWidget;
 import com.ponysdk.core.ui.datagrid.View;
 import com.ponysdk.core.ui.datagrid.impl.DefaultView;
 
-public class DataGrid<DataType> implements IsPWidget, ColumnSortListener<DataType> {
+public class DataGrid2<DataType> implements IsPWidget, ColumnSortListener<DataType> {
 
-    private final Function<DataType, ?> keyProvider;
-    private final DataCache<DataType> cache;
-    private final List<ColumnDescriptor<DataType, ?>> columns = new ArrayList<>();
+    private final Function<DataType, ?> keyProvider = Function.identity();
+
+    private final MapAndList<DataType> rows = new MapAndList<>(keyProvider);
+    private final MapAndList<ColumnDescriptor<DataType, ?>> columns = new MapAndList<>(col -> col.getIdentifier());
+
+    private final List<ColumnDescriptor<DataType, ?>> sortedColumns = new ArrayList<>();
 
     private final View view = new DefaultView();
 
-    public DataGrid(final Function<DataType, ?> keyProvider) {
-        this.keyProvider = Function.identity();
-        cache = new DataCache<>(keyProvider);
-    }
-
-    public DataGrid() {
-        this(Function.identity());
-    }
-
     public void addColumn(final ColumnDescriptor<DataType, ?> newColumn) {
-        if (columns.add(newColumn)) {
+        if (!columns.contains(newColumn)) {
+            columns.set(newColumn);
 
             final int index = columns.size() - 1;
             drawHeader(index, newColumn);
@@ -38,23 +33,14 @@ public class DataGrid<DataType> implements IsPWidget, ColumnSortListener<DataTyp
     }
 
     public void removeColumn(final ColumnDescriptor<DataType, ?> column) {
-        final int index = columns.indexOf(column);
-        if (index == -1) return;
-
-        columns.remove(index);
-        drawColFrom(index);
-        resetCol(columns.size());
+        final int index = columns.remove(column);
+        if (index != -1) {
+            drawColFrom(index);
+            resetCol(columns.size());
+        }
     }
 
     public void setData(final DataType data) {
-        if (cache.contains(data)) {
-            final int indexBefore = cache.indexOf(data);
-
-            if (indexBefore != -1) {
-
-            }
-        }
-
         if (!rows.contains(data)) {
             rows.set(data);
         }

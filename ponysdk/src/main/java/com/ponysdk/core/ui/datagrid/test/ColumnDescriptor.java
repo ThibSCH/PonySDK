@@ -61,6 +61,7 @@ public class ColumnDescriptor<DataType, RenderedType> {
     }
 
     public void setComparator(final Comparator<RenderedType> propertyComparator) {
+        //Create a comparator of DataTypes based on the property extracted in this column
         final Comparator<DataType> comp = (arg0, arg1) -> {
             //Use the provided comparator on datas as they are rendered in this column
             final RenderedType value0 = cellRenderer.getRenderedValue(arg0);
