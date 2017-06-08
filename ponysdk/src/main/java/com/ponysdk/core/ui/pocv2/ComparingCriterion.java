@@ -1,7 +1,11 @@
 
 package com.ponysdk.core.ui.pocv2;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import com.ponysdk.core.server.service.query.ComparatorType;
+import com.ponysdk.core.ui.pocv2.CoumpoundCriterion.LogicalOperator;
 
 public class ComparingCriterion implements Criterion {
 
@@ -23,7 +27,7 @@ public class ComparingCriterion implements Criterion {
         return comparType;
     }
 
-    public void setComparType(ComparatorType comparType) {
+    public void setComparType(final ComparatorType comparType) {
         this.comparType = comparType;
     }
 
@@ -31,7 +35,17 @@ public class ComparingCriterion implements Criterion {
         return value;
     }
 
-    public void setValue(Object value) {
+    public void setValue(final Object value) {
         this.value = value;
+    }
+
+    public CoumpoundCriterion or(final ComparingCriterion otherCrit) {
+        final Collection<ComparingCriterion> criteria = Arrays.asList(this, otherCrit);
+        return new CoumpoundCriterion(LogicalOperator.OR, criteria);
+    }
+
+    public CoumpoundCriterion and(final ComparingCriterion otherCrit) {
+        final Collection<ComparingCriterion> criteria = Arrays.asList(this, otherCrit);
+        return new CoumpoundCriterion(LogicalOperator.AND, criteria);
     }
 }
