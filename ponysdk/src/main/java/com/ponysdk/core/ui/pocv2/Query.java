@@ -7,7 +7,7 @@ import java.util.List;
 public class Query {
 
     private final List<SortingCriterion> sortCriteria = new ArrayList<>();
-    private final List<ComparingCriterion> compareCriteria = new ArrayList<>();
+    private ComparingCriterion compareCriterion;
     private int pageSize = Integer.MAX_VALUE;
     private int pageNum = 0;
 
@@ -34,8 +34,8 @@ public class Query {
         this.pageNum = pageNum;
     }
 
-    public List<ComparingCriterion> getCompareCriteria() {
-        return compareCriteria;
+    public ComparingCriterion getCompareCriterion() {
+        return compareCriterion;
     }
 
     public List<SortingCriterion> getSortCriteria() {
@@ -46,8 +46,8 @@ public class Query {
         sortCriteria.add(crit);
     }
 
-    public void addComparingCriterion(final ComparingCriterion crit) {
-        compareCriteria.add(crit);
+    public void setComparingCriterion(final ComparingCriterion crit) {
+        compareCriterion = crit;
     }
 
     public QueryMode getQueryMode() {

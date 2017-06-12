@@ -1,33 +1,26 @@
+
 package com.ponysdk.core.ui.datagrid;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.function.Function;
 
 import com.ponysdk.core.ui.basic.IsPWidget;
 import com.ponysdk.core.ui.basic.PWidget;
-import com.ponysdk.core.ui.datagrid.impl.DefaultView;
 
-import java.util.*;
-import java.util.function.Function;
-
-public class DataGrid<DataType extends Comparable<DataType>> implements IsPWidget {
+public class DataGrid<DataType> implements IsPWidget {
 
     private final View view;
     private final List<ColumnDescriptor<DataType>> columns = new ArrayList<>();
-
-    private final TreeSet<Decorator<DataType>> rows;
     private final Function<DataType, ?> keyProvider;
 
-    public DataGrid() {
-        this(new DefaultView(), Function.identity());
-    }
+    private TreeSet<Decorator<DataType>> rows;
 
-    public DataGrid(final Function<DataType, ?> keyProvider) {
-        this(new DefaultView(), keyProvider);
-    }
-
-    public DataGrid(final View view, final Function<DataType, ?> keyProvider) {
-        this(view, keyProvider, Comparable::compareTo);
-    }
-
-    public DataGrid(final View view, final Function<DataType, ?> keyProvider, Comparator<DataType> comparator) {
+    public DataGrid(final View view, final Function<DataType, ?> keyProvider, final Comparator<DataType> comparator) {
         this.view = view;
         this.keyProvider = keyProvider;
         this.rows = new TreeSet<>((o1, o2) -> comparator.compare(o1.data, o2.data));
@@ -40,7 +33,8 @@ public class DataGrid<DataType extends Comparable<DataType>> implements IsPWidge
 
     public void addColumnDescriptor(final ColumnDescriptor<DataType> column) {
         if (columns.add(column)) {
-            int r = 0, c = columns.size() - 1;
+            int r = 0;
+            final int c = columns.size() - 1;
 
             drawHeader(c, column);
 
@@ -58,7 +52,7 @@ public class DataGrid<DataType extends Comparable<DataType>> implements IsPWidge
             if (indexBefore != -1) {
                 rows.remove(d);
                 rows.add(d);
-                int indexAfter = rows.headSet(d).size();
+                final int indexAfter = rows.headSet(d).size();
                 if (indexBefore == indexAfter) {
                     update(indexAfter, d);
                 } else {
@@ -79,7 +73,7 @@ public class DataGrid<DataType extends Comparable<DataType>> implements IsPWidge
         if (c != -1) {
             int r = 0;
 
-            int size = columns.size() - 1;
+            final int size = columns.size() - 1;
 
             columns.remove(c);
 
@@ -110,7 +104,7 @@ public class DataGrid<DataType extends Comparable<DataType>> implements IsPWidge
         return Collections.unmodifiableList(columns);
     }
 
-    private void drawHeader(int c, final ColumnDescriptor<DataType> column) {
+    private void drawHeader(final int c, final ColumnDescriptor<DataType> column) {
         view.setHeader(c, column.getHeaderRenderer().render());
     }
 
@@ -121,7 +115,7 @@ public class DataGrid<DataType extends Comparable<DataType>> implements IsPWidge
         }
     }
 
-    private void draw(int fromRow, final Decorator<DataType> from) {
+    private void draw(final int fromRow, final Decorator<DataType> from) {
         if (from == null) return;
         final SortedSet<Decorator<DataType>> tail = rows.tailSet(from);
         int r = fromRow;
@@ -149,7 +143,7 @@ public class DataGrid<DataType extends Comparable<DataType>> implements IsPWidge
     }
 
     private void resetColumn(final Integer c, final ColumnDescriptor<DataType> column) {
-        PWidget header = view.getHeader(c);
+        final PWidget header = view.getHeader(c);
         if (header != null) header.removeFromParent();
 
         for (int r = 0; r < view.getRowCount(); r++) {
@@ -162,6 +156,14 @@ public class DataGrid<DataType extends Comparable<DataType>> implements IsPWidge
         for (final ColumnDescriptor<DataType> column : columns) {
             column.getCellRenderer().reset(view.getCell(r, c++));
         }
+    }
+
+    public void setSorting(final Comparator<DataType> sortComparator) {
+        final TreeSet<Decorator<DataType>> newTreeSet = new TreeSet<>((o1, o2) -> sortComparator.compare(o1.data, o2.data));
+        newTreeSet.addAll(rows);
+        rows = newTreeSet;
+
+        draw(0, rows.first()); //refresh grid
     }
 
 }

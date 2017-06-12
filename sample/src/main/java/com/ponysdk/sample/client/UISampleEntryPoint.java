@@ -36,7 +36,6 @@ import com.ponysdk.core.server.application.UIContext;
 import com.ponysdk.core.server.concurrent.PScheduler;
 import com.ponysdk.core.ui.basic.Element;
 import com.ponysdk.core.ui.basic.PAbsolutePanel;
-import com.ponysdk.core.ui.basic.PAnchor;
 import com.ponysdk.core.ui.basic.PButton;
 import com.ponysdk.core.ui.basic.PCookies;
 import com.ponysdk.core.ui.basic.PDateBox;
@@ -58,9 +57,6 @@ import com.ponysdk.core.ui.basic.PWindow;
 import com.ponysdk.core.ui.basic.event.PClickEvent;
 import com.ponysdk.core.ui.basic.event.PKeyUpEvent;
 import com.ponysdk.core.ui.basic.event.PKeyUpHandler;
-import com.ponysdk.core.ui.datagrid.ColumnDescriptor;
-import com.ponysdk.core.ui.datagrid.DataGrid;
-import com.ponysdk.core.ui.datagrid.impl.PLabelCellRenderer;
 import com.ponysdk.core.ui.eventbus2.EventBus.EventHandler;
 import com.ponysdk.core.ui.grid.AbstractGridWidget;
 import com.ponysdk.core.ui.grid.GridTableWidget;
@@ -273,29 +269,29 @@ public class UISampleEntryPoint implements EntryPoint, UserLoggedOutHandler {
     }
 
     private void testNewGrid() {
-        final AtomicInteger i = new AtomicInteger();
-
-        final DataGrid<Integer> grid = new DataGrid<>();
-
-        for (int cpt = 0; cpt < 20; cpt++) {
-            final ColumnDescriptor<Integer> column = new ColumnDescriptor<>();
-            final PAnchor anchor = Element.newPAnchor("Header " + i.incrementAndGet());
-            anchor.addClickHandler(e -> grid.removeColumn(column));
-            column.setCellRenderer(new PLabelCellRenderer<>(from -> a + ""));
-            column.setHeaderRenderer(() -> anchor);
-            grid.addColumnDescriptor(column);
-        }
-        final PTextBox textBox = Element.newPTextBox();
-
-        final PButton add = Element.newPButton("add");
-        add.addClickHandler(e -> {
-            grid.setData(Integer.valueOf(textBox.getText()));
-        });
-
-        PWindow.getMain().add(add);
-
-        PWindow.getMain().add(textBox);
-        PWindow.getMain().add(grid);
+        //        final AtomicInteger i = new AtomicInteger();
+        //
+        //        final DataGrid<Integer> grid = new DataGrid<>();
+        //
+        //        for (int cpt = 0; cpt < 20; cpt++) {
+        //            final ColumnDescriptor<Integer> column = new ColumnDescriptor<>();
+        //            final PAnchor anchor = Element.newPAnchor("Header " + i.incrementAndGet());
+        //            anchor.addClickHandler(e -> grid.removeColumn(column));
+        //            column.setCellRenderer(new PLabelCellRenderer<>(from -> a + ""));
+        //            column.setHeaderRenderer(() -> anchor);
+        //            grid.addColumnDescriptor(column);
+        //        }
+        //        final PTextBox textBox = Element.newPTextBox();
+        //
+        //        final PButton add = Element.newPButton("add");
+        //        add.addClickHandler(e -> {
+        //            grid.setData(Integer.valueOf(textBox.getText()));
+        //        });
+        //
+        //        PWindow.getMain().add(add);
+        //
+        //        PWindow.getMain().add(textBox);
+        //        PWindow.getMain().add(grid);
 
         /**
          * PScheduler.scheduleAtFixedRate(() -> { grid.setData((int)
