@@ -163,7 +163,23 @@ public class DataGrid<DataType> implements IsPWidget {
         newTreeSet.addAll(rows);
         rows = newTreeSet;
 
-        draw(0, rows.first()); //refresh grid
+        refresh();
     }
 
+    public void clear() {
+        rows.clear();
+        refresh();
+    }
+
+    private void refresh() {
+
+        if (rows.isEmpty()) {
+            final int rowCount = view.getRowCount();
+            for (int i = 0; i < rowCount; i++) {
+                resetRow(i);
+            }
+        } else {
+            draw(0, rows.first());
+        }
+    }
 }
